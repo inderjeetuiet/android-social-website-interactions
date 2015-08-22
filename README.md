@@ -19,3 +19,6 @@ Coming soon
 1. Login from Paypal account
 2. Login form Linkend account
 3. Adding example of accessing data for each social website
+
+
+PS, if you want to use this, you just need to replace generated keys respective to social website integration you want to do or may be minor adjustments as per needs.  
