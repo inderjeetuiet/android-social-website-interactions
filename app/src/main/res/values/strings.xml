@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SociomanticTest</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="facebook_app_id">Your Facebook key</string>
+    <string name="title_activity_data">DataActivity</string>
+    <string name="twitter_editbox">Please enter any hash tag</string>
+    <string name="title_activity_google_plus">GooglePlusActivity</string>
+    <string name="title_activity_face_book_data">FaceBookDataActivity</string>
+    <string name="face_book_welcome">Welcome to your facebook profile</string>
+    <string name="twitter_no_tweets">No Tweets</string>
+    <string name="g_signOut">Sign Out</string>
+    <string name="g_instagram">Instagram Login</string>
+    <string name="g_dropbox">Dropbox Login</string>
+    <string name="g_getInfo">Get Information</string>
+    <string name="title_activity_instagram_activity_data">InstagramActivityData</string>
+    <string name="instagram_page">Welcome to Instagram Home page</string>
+</resources>
