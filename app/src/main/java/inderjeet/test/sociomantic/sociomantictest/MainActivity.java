@@ -1,7 +1,5 @@
 package inderjeet.test.sociomantic.sociomantictest;
 
-import android.app.IntentService;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageInfo;
@@ -10,7 +8,6 @@ import android.content.pm.Signature;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -19,7 +16,6 @@ import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.android.AndroidAuthSession;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
-import com.dropbox.client2.session.Session;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -38,7 +34,6 @@ import com.google.android.gms.plus.Plus;
 
 import com.google.android.gms.plus.model.people.Person;
 import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.AppSession;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -89,14 +84,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
 
-
         callbackManager = CallbackManager.Factory.create();
         getFbKeyHash(PACKAGE_NAME);
+
         setContentView(R.layout.activity_main);
+
+        /*
+        accessing components defined in xml such as buttons, layouts
+         */
 
         fbLoginButton = (LoginButton)findViewById(R.id.login_button);
         gPlusLogin = (SignInButton) findViewById(R.id.sign_in_button);
@@ -104,6 +104,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         twitterLoginButton = (TwitterLoginButton)findViewById(R.id.twitter_login_button);
         btn_instagram = (Button) findViewById(R.id.btn_instagram);
         btn_dropbox = (Button) findViewById(R.id.btn_dropdop);
+
+        /*
+        Dropbox authtication button listener
+         */
 
         btn_dropbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,6 +118,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 dropboxAPI.getSession().startOAuth2Authentication(MainActivity.this);
             }
         });
+
+        /*
+        Instagram authentication button listner
+         */
 
         btn_instagram.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,40 +142,52 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         });
 
+        /*
+            Google plus authtication button listener
+         */
+
         gPlusLogin.setOnClickListener(this);
         gPlusLogOut.setOnClickListener(this);
-        twitterLoginButton.setCallback(new LoginHandler());
 
+        /*
+        Twitter login authtication callback handler
+         */
+
+        twitterLoginButton.setCallback(new LoginHandler());
         loginGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
-         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-             @Override
-             public void onSuccess(LoginResult loginResult) {
-                 accessToken = loginResult.getAccessToken();
-                 Profile profile = Profile.getCurrentProfile();
-                 Toast.makeText(MainActivity.this, "You are logged in", Toast.LENGTH_LONG).show();
-                 Intent intent = new Intent(MainActivity.this, FaceBookDataActivity.class);
-                 startActivity(intent);
-             }
-             @Override
-             public void onCancel() {
-                 Toast.makeText(MainActivity.this, "You have canceled the login process", Toast.LENGTH_LONG).show();
-             }
-             @Override
-             public void onError(FacebookException e) {
-                 Toast.makeText(MainActivity.this, "Unable to login", Toast.LENGTH_LONG).show();
-             }
-         });
+        /*
+        Facebook login authetication callback manager
+         */
+
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                accessToken = loginResult.getAccessToken();
+                Profile profile = Profile.getCurrentProfile();
+                Toast.makeText(MainActivity.this, "You are logged in", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(MainActivity.this, FaceBookDataActivity.class);
+                startActivity(intent);
+            }
+            @Override
+            public void onCancel() {
+                Toast.makeText(MainActivity.this, "You have canceled the login process", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onError(FacebookException e) {
+                Toast.makeText(MainActivity.this, "Unable to login", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
      * Sign-in into google
      * */
 
-     private void signInWithGplus() {
+    private void signInWithGplus() {
         if (!loginGoogleApiClient.isConnecting()) {
             gSignedIn = true;
             resolveSignInError();
@@ -177,7 +197,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
      * Method to resolve any signin errors related to google plus
      * */
 
-     private void resolveSignInError() {
+    private void resolveSignInError() {
         if (connectionResult.hasResolution()) {
             try {
                 currentIntent = true;
@@ -188,7 +208,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         }
     }
-
+    /**
+     * Hanlding result after Google, Tweitter, Facebook, Dropbox etc login button click
+     */
     @Override
     protected void onActivityResult(int reqCode, int resCode, Intent i) {
         callbackManager.onActivityResult(reqCode, resCode, i);
@@ -300,7 +322,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
      * Updating the UI, showing/hiding buttons and profile layout
      * */
 
-     private void updateUI(boolean isSignedIn) {
+    private void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             gPlusLogin.setVisibility(View.GONE);
             fbLoginButton.setVisibility(View.GONE);
@@ -361,7 +383,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 signOutFromGplus();
                 break;
             default:
-               break;
+                break;
         }
     }
 

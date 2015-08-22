@@ -29,6 +29,7 @@ public class InstagramApp {
     private ProgressDialog mProgress;
     private String mAuthUrl;
     private String mTokenUrl;
+    private Handler mHandler;
     private String mAccessToken;
     private Context mCtx;
     private String mClientId;
@@ -78,6 +79,27 @@ public class InstagramApp {
         authorize();
         mProgress = new ProgressDialog(context);
         mProgress.setCancelable(false);
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == WHAT_ERROR) {
+                    mProgress.dismiss();
+                    if(msg.arg1 == 1) {
+                        mListener.onFail("Failed to get access token");
+                    }
+                    else if(msg.arg1 == 2) {
+                        mListener.onFail("Failed to get user information");
+                    }
+                }
+                else if(msg.what == WHAT_FETCH_INFO) {
+                    fetchUserName();
+                }
+                else {
+                    mProgress.dismiss();
+                    mListener.onSuccess();
+                }
+            }
+        };
     }
 
     private void getAccessToken(final String code) {
@@ -122,7 +144,6 @@ public class InstagramApp {
         new Thread() {
             @Override
             public void run() {
-                Log.i(TAG, "Fetching user info");
                 int what = WHAT_FINALIZE;
                 try {
                     URL url = new URL(API_URL + "/users/" + mSession.getId() + "/?access_token=" + mAccessToken);
@@ -146,27 +167,7 @@ public class InstagramApp {
     }
 
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == WHAT_ERROR) {
-                mProgress.dismiss();
-                if(msg.arg1 == 1) {
-                    mListener.onFail("Failed to get access token");
-                }
-                else if(msg.arg1 == 2) {
-                    mListener.onFail("Failed to get user information");
-                }
-            }
-            else if(msg.what == WHAT_FETCH_INFO) {
-                fetchUserName();
-            }
-            else {
-                mProgress.dismiss();
-                mListener.onSuccess();
-            }
-        }
-    };
+
 
     public void setListener(OAuthAuthenticationListener listener) {
         mListener = listener;
@@ -206,7 +207,6 @@ public class InstagramApp {
     }
     public interface OAuthAuthenticationListener {
         public abstract void onSuccess();
-
         public abstract void onFail(String error);
     }
 }
