@@ -10,10 +10,12 @@ Currently the project has working login prototype for following websites
 5. Dropbox
 
 In addition for some social website integration, I have added examples of accessing data from respective social website for instance
+
 1. For Twitter, I have added an example of searching the Tweets based on Hashtag and populate in Listview using Fabric
 2. For Google Plus, added example is for accessing user information.
 
 Coming soon
+
 1. Login from Paypal account
 2. Login form Linkend account
 3. Adding example of accessing data for each social website
