@@ -63,13 +63,10 @@ public class TwitterDataActivity extends ActionBarActivity {
                                 public void success(Result<Search> searchResult) {
                                     allTweets.clear();
                                     for(int i = 0; i < searchResult.data.tweets.size(); i++) {
-                                        Tweets t = new Tweets();
-                                        t.ttext = searchResult.data.tweets.get(i).text;
-                                        t.uname = searchResult.data.tweets.get(i).user.name;
                                         if (searchResult.data.tweets.get(i).place != null)
-                                            t.country = searchResult.data.tweets.get(i).place.country;
-                                        t.reTweetCount = searchResult.data.tweets.get(i).retweetCount;
-                                        allTweets.add(t);
+                                            allTweets.add(Tweets.updateAllValues(searchResult.data.tweets.get(i).text,
+                                                searchResult.data.tweets.get(i).place.country, searchResult.data.tweets.get(i).user.name,
+                                                searchResult.data.tweets.get(i).retweetCount ));
                                     }
                                     Log.d(TAG, " Size #1 "+ allTweets.size());
                                     if(allTweets.size() > 0) {
