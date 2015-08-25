@@ -6,10 +6,10 @@ import com.twitter.sdk.android.Twitter;
  * Created by isingh on 8/18/15.
  */
 public class Tweets {
-    public String ttext;
-    public String country;
-    public String uname;
-    public int reTweetCount;
+    private String ttext;
+    private String country;
+    private String uname;
+    private int reTweetCount;
     private static String countTemp = "Not Found";
     public Tweets(){
         super();
